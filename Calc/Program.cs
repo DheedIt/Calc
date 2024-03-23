@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Calc;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -10,69 +11,141 @@ using System.Threading.Tasks;
 namespace Calc
 {
 
-    class Addition
+    class request
     {
-
-        public void DoAdd()
+        public string EnterN()
         {
             Console.Clear();
             string readString;
-            Console.Write("Enter numbers: ");
-            double result = 0;
+            Console.WriteLine("Enter: ");
             readString = Console.ReadLine();
-            string[] newReadString = readString.Split();
-            foreach (string str in newReadString) {
+            return readString;
+        }
+        public bool contueCheck(string answer)
+        {
+            Console.WriteLine("Continue? Y/N");
+            answer = Console.ReadLine();
+            Console.Clear();
+            if (answer[0] != 'y')
+            {
+                return true;
+            }
+            else return false;
+        }
+    }
+
+    class operations : request
+    {
+        public void DoSub()
+        {
+            string[] newReadString = EnterN().Split();
+            double result = double.Parse(newReadString[0]);
+            for (int i = 1; i < newReadString.Length; ++i)
+            {
+                if (Regex.IsMatch(newReadString[i], @"^[0-9]+$"))
                 {
-                    try
-                    {
-                        result += Convert.ToDouble(str);
-                    }
-                    catch (Exception) { 
-
-                        Console.WriteLine("Wrong symbol"); ;
-                    }
-
+                    result -= int.Parse(newReadString[i]);
+                }
+                else
+                {
+                    Console.WriteLine("Wrong symbol in input");
                 }
             }
             Console.WriteLine("Result: {0}", result);
-        }        
-    }
-    public class Subtraction
-    {
+        }
 
-
-        public void DoSub() { 
-        
-            Console.Clear();
-            string readString;
-            Console.Write("Enter numbers: ");
-            int result = 0;
-            bool check = false;
-            readString = Console.ReadLine().ToString();
-            string[] newReadString = readString.Split();
+        public void DoAdd()
+        {
+            double result = 0;
+            string[] newReadString = EnterN().Split();
             foreach (string str in newReadString)
             {
                 if (Regex.IsMatch(str, @"^[0-9]+$"))
                 {
-                    result -= int.Parse(str);
+                    result += double.Parse(str);
                 }
                 else
                 {
-                    Console.WriteLine("Wrong data");
-                    check = true;
-                    break;
+                    Console.WriteLine("Wrong symbol in input");
                 }
             }
-            if(!check)
             Console.WriteLine("Result: {0}", result);
+
         }
     }
-    internal class Program : Addition
+    class uChoice : operations
+    {
+        public bool chooseOperation()
+        {
+            byte userChoice = 0;
+            Console.WriteLine("Choose function: ");
+            try
+            {
+                userChoice = byte.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                Console.Clear();
+                Console.WriteLine("Wrong input");
+                return false;
+            }
+            Console.WriteLine(userChoice);
+            bool END = false;
+            string answer;
+            switch (userChoice)
+            {
+                case 1:
+                    DoAdd();
+                    Console.WriteLine("Continue? Y/N");
+                    answer = Console.ReadLine();
+                    Console.Clear();
+                    if (answer[0] != 'y')
+                    {
+                        END = true;
+                    }
+                    break;
+                case 2:
+
+                    DoSub();
+                    Console.WriteLine("Continue? Y/N");
+                    answer = Console.ReadLine();
+                    Console.Clear();
+                    if (answer[0] != 'y')
+                    {
+                        END = true;
+                    }
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                default:
+                    break;
+            }
+            return END;
+        }
+
+    }
+}
+
+
+    internal class Program : uChoice
     {
         static void Main(string[] args)
         {
-            byte END = 0;
-            while(END == 0)
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            while (true)
             {
                 Console.WriteLine("1. Сложение (+)");
                 Console.WriteLine("2. Вычитание (-)");
@@ -92,53 +165,12 @@ namespace Calc
                 Console.WriteLine("16. Квадратный корень из n (∛n)");
                 Console.WriteLine("17. Куб числа (n ^ 3)");
                 Console.WriteLine("Enter function: ");
-                byte userChoice = byte.Parse(Console.ReadLine());
-                Console.WriteLine(userChoice);
-                string answer;
-                switch (userChoice)
-                {
-                    case 1:
-                        Addition addition = new Addition();
-                        addition.DoAdd();
-                        Console.WriteLine("Continue? Y/N");
-                        answer = Console.ReadLine();
-                        Console.Clear();
-                        if (answer[0] != 'y')
-                        {
-                            ++END;
-                        }
-                        break;
-                    case 2:
-                        Subtraction subtraction = new Subtraction();
-                        subtraction.DoSub();
-                        Console.WriteLine("Continue? Y/N");
-                        answer = Console.ReadLine();
-                        Console.Clear();
-                        if (answer[0] != 'y')
-                        {
-                            ++END;
-                        }
-                        break;
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                    default:
-                        break;
-                }
-            }
-        }
-     
-    }
+                uChoice makeChoice;
+                makeChoice = new uChoice();
+            if (makeChoice.chooseOperation() == true)
+                break;
+
 }
+        }
+    }
+
